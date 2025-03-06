@@ -28,8 +28,9 @@ def main():
 
     if search_results:
         parsed_data = parse_documents_list(search_results)  # データを解析
-        save_documents_to_db(parsed_data)   # データベースに保存
+        newly_added_count = save_documents_to_db(parsed_data)   # データベースに保存
         print(f"申請文書データをデータベース({DATABASE_NAME})の{TABLE_NAME}テーブルに保存しました。") #テーブル名出力
+        print(f"新規登録件数：{newly_added_count}件")
     else:
         print("検索結果が取得できませんでした。")
 
@@ -160,8 +161,10 @@ def save_documents_to_db(documents):
     """
     申請文書リストをデータベースに保存する関数。
      document_id が重複しないように、INSERT OR IGNORE を使用
+     新規に登録された件数を返すように変更
     """
     conn = None
+    newly_added_count = 0
     try:
         conn = sqlite3.connect(DATABASE_NAME)
         create_table(conn)
@@ -183,6 +186,7 @@ def save_documents_to_db(documents):
                 document["form_id"],
                 document.get("request_factory")
             ))
+            newly_added_count += cursor.rowcount #挿入された行数を加算
         conn.commit()
 
     except sqlite3.Error as e:
@@ -190,6 +194,7 @@ def save_documents_to_db(documents):
     finally:
         if conn:
             conn.close()
+    return newly_added_count # 新規登録件数を返す
 
 
 if __name__ == "__main__":
