@@ -4,3 +4,5 @@ request_factory_list:
   C: 小松西工場
   D: 加賀工場
   E: 小松串工場
+
+table_name: T_APPROVED_PURCHASE_REQUESTS 

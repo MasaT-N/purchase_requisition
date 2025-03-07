@@ -2,3 +2,4 @@
 .env
 search_results.json
 purchase_requisitions.db
+check_approved_requests.log
